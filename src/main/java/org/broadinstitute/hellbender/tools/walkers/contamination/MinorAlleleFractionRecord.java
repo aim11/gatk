@@ -1,5 +1,6 @@
 package org.broadinstitute.hellbender.tools.walkers.contamination;
 
+import htsjdk.samtools.util.Locatable;
 import org.broadinstitute.hellbender.exceptions.UserException;
 import org.broadinstitute.hellbender.utils.SimpleInterval;
 import org.broadinstitute.hellbender.utils.Utils;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by David Benjamin on 2/13/17.
  */
-public class MinorAlleleFractionRecord {
+public class MinorAlleleFractionRecord implements Locatable {
     private final SimpleInterval segment;
     private double minorAlleleFraction;
 
@@ -23,6 +24,15 @@ public class MinorAlleleFractionRecord {
         this.segment = segment;
         this.minorAlleleFraction = minorAlleleFraction;
     }
+
+    @Override
+    public String getContig() { return segment.getContig(); }
+
+    @Override
+    public int getStart() { return segment.getStart(); }
+
+    @Override
+    public int getEnd() { return segment.getEnd(); }
 
     public SimpleInterval getSegment() {
         return segment;

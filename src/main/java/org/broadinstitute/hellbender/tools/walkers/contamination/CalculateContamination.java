@@ -130,7 +130,7 @@ public class CalculateContamination extends CommandLineProgram {
     public static final String TUMOR_SEGMENTATION_SHORT_NAME = "segments";
     @Argument(fullName= TUMOR_SEGMENTATION_LONG_NAME,
             shortName= TUMOR_SEGMENTATION_SHORT_NAME,
-            doc="The output table containing segmentation of the tumor by minor allele fraction")
+            doc="The output table containing segmentation of the tumor by minor allele fraction", optional = true)
     private final File outputTumorSegmentation = null;
 
     public static final String LOW_COVERAGE_RATIO_THRESHOLD_NAME = "low-coverage-ratio-threshold";

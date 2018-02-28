@@ -25,7 +25,6 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
     public static final String GERMLINE_RESOURCE_LONG_NAME = "germline-resource";
     public static final String DEFAULT_AF_LONG_NAME = "af-of-alleles-not-in-resource";
     public static final String DEFAULT_AF_SHORT_NAME = "default-af";
-    public static final String LOG_SOMATIC_PRIOR_LONG_NAME = "log-somatic-prior";
     public static final String EMISSION_LOG_LONG_NAME = "tumor-lod-to-emit";
     public static final String EMISSION_LOG_SHORT_NAME = "emit-lod";
     public static final String INITIAL_TUMOR_LOD_LONG_NAME = "initial-tumor-lod";
@@ -77,10 +76,9 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
      * Population allele fraction assigned to alleles not found in germline resource.
      */
     @Argument(fullName= DEFAULT_AF_LONG_NAME, shortName = DEFAULT_AF_SHORT_NAME,
-            doc="Population allele fraction assigned to alleles not found in germline resource.  A reasonable value is" +
-                    "1/(2* number of samples in resource) if a germline resource is available; otherwise an average " +
-                    "heterozygosity rate such as 0.001 is reasonable.", optional = true)
-    public double afOfAllelesNotInGermlineResource = 0.001;
+            doc="Population allele fraction assigned to alleles not found in germline resource.  Please see docs/mutect2.pdf for" +
+                    "a derivation of the default value.", optional = true)
+    public double afOfAllelesNotInGermlineResource = 0.00000005;
 
     /**
      * Only variants with tumor LODs exceeding this threshold will be written to the VCF, regardless of filter status.
