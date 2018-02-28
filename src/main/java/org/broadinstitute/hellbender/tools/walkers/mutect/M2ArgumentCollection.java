@@ -83,17 +83,6 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
     public double afOfAllelesNotInGermlineResource = 0.001;
 
     /**
-     * Prior log-10 probability that any given site has a somatic allele. Impacts germline probability calculation.
-     * The workflow uses this parameter only towards the germline event filter. It does NOT relate to the LOD threshold.
-     * For example, -6 translates to one in a million or ~3000 somatic mutations per human genome.
-     * Depending on tumor type, mutation rate ranges vary (Lawrence et al. Nature 2013), and so adjust parameter accordingly.
-     * For higher expected rate of mutation, adjust number up, e.g. -5. For lower expected rate of mutation, adjust number down, e.g. -7.
-     */
-    @Argument(fullName= LOG_SOMATIC_PRIOR_LONG_NAME,
-            doc="Prior probability that a given site has a somatic allele.", optional = true)
-    public double log10PriorProbOfSomaticEvent = -6.0;
-
-    /**
      * Only variants with tumor LODs exceeding this threshold will be written to the VCF, regardless of filter status.
      * Set to less than or equal to tumor_lod. Increase argument value to reduce false positives in the callset.
      * Default setting of 3 is permissive and will emit some amount of negative training data that 

@@ -19,23 +19,26 @@ import java.util.stream.IntStream;
  */
 public class GermlineProbabilityCalculator {
 
-    public static Map<String, Object> calculateAnnotations(List<VariantContext> germlineResourceVariants,
+    public static Map<String, Object> getPopulationAlleleFrequencyAnnotation(List<VariantContext> germlineResourceVariants,
                                                            final List<Allele> altAlleles,
-                                                           final double[] tumorLog10Odds,
-                                                           final Optional<double[]> normalLog10Odds,
-                                                           final double afOfAllelesNotInGermlineResource,
-                                                           final double log10PriorProbOfSomaticEvent) {
-        final double[] normalLog10OddsOrFlat = normalLog10Odds.orElseGet(() -> MathUtils.applyToArray(tumorLog10Odds, x -> 0));
+                                                           final double afOfAllelesNotInGermlineResource) {
         final Optional<VariantContext> germlineVC = germlineResourceVariants.isEmpty() ? Optional.empty()
                 : Optional.of(germlineResourceVariants.get(0));  // assume only one VC per site
         final double[] populationAlleleFrequencies = getGermlineAltAlleleFrequencies(altAlleles, germlineVC, afOfAllelesNotInGermlineResource);
 
+        return ImmutableMap.of(GATKVCFConstants.POPULATION_AF_VCF_ATTRIBUTE, populationAlleleFrequencies);
+    }
+
+    public static double[] calculateGermlineProbabilities(final double[] populationAlleleFrequencies,
+                                                                     final double[] tumorLog10Odds,
+                                                                     final Optional<double[]> normalLog10Odds,
+                                                                     final double log10PriorProbOfSomaticEvent) {
+        final double[] normalLog10OddsOrFlat = normalLog10Odds.orElseGet(() -> MathUtils.applyToArray(tumorLog10Odds, x -> 0));
         // note the minus sign required because Mutect has the convention that this is log odds of allele *NOT* being in the normal
-        final double[] germlineLog10Posteriors = new IndexRange(0, altAlleles.size()).mapToDouble(n ->
+        final double[] germlineLog10Posteriors = new IndexRange(0, tumorLog10Odds.length).mapToDouble(n ->
                 log10PosteriorProbabilityOfGermlineVariant(-normalLog10OddsOrFlat[n], tumorLog10Odds[n], populationAlleleFrequencies[n], log10PriorProbOfSomaticEvent));
 
-        return ImmutableMap.of(GATKVCFConstants.POPULATION_AF_VCF_ATTRIBUTE, populationAlleleFrequencies,
-                GATKVCFConstants.GERMLINE_POSTERIORS_VCF_ATTRIBUTE, germlineLog10Posteriors);
+        return germlineLog10Posteriors;
     }
 
     @VisibleForTesting
