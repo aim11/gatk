@@ -87,6 +87,7 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
                 "--" + M2ArgumentCollection.DOWNSAMPLING_STRIDE_LONG_NAME, "20",
                 "--max-reads-per-alignment-start", "4",
                 "--" + M2ArgumentCollection.MAX_SUSPICIOUS_READS_PER_ALIGNMENT_START_LONG_NAME, "4",
+                "-default-af", "0.00000003" // TODO: delete this once rebased on new germline model branch -- don't merge until then
 
         };
 
@@ -111,7 +112,7 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
 
         // run Concordance
         final File concordanceSummary = createTempFile("concordance", ".txt");
-        new Main().instanceMain(makeCommandLineArgs(Arrays.asList("-truth", truthVcf.getAbsolutePath(), "-eval", unfilteredVcf.getAbsolutePath(), "-L", "20", "-XL", mask.getAbsolutePath(), "-summary", concordanceSummary.getAbsolutePath()), "Concordance"));
+        new Main().instanceMain(makeCommandLineArgs(Arrays.asList("-truth", truthVcf.getAbsolutePath(), "-eval", filteredVcf.getAbsolutePath(), "-L", "20", "-XL", mask.getAbsolutePath(), "-summary", concordanceSummary.getAbsolutePath()), "Concordance"));
 
         final List<ConcordanceSummaryRecord> summaryRecords = new ConcordanceSummaryRecord.Reader(concordanceSummary).toList();
         summaryRecords.forEach(rec -> {
