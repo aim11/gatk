@@ -228,9 +228,12 @@ public final class SvDiscoverFromLocalAssemblyContigAlignmentsSpark extends GATK
         // TODO: 1/10/18 bring back read annotation, see ticket 4228
         forNonComplexVariants(contigsByPossibleRawTypes, svDiscoveryInputData);
 
+        final List<VariantContext> complexVariants =
+                CpxVariantInterpreter.inferCpxVariant(contigsByPossibleRawTypes.get(RawTypes.Cpx), svDiscoveryInputData);
+
         svDiscoveryInputData.updateOutputPath(outputDir+"/"+RawTypes.Cpx.name()+".vcf");
-        new CpxVariantDetector()
-                .inferSvAndWriteVCF(contigsByPossibleRawTypes.get(RawTypes.Cpx), svDiscoveryInputData);
+        SVVCFWriter.writeVCF(complexVariants, svDiscoveryInputData.outputPath,
+                svDiscoveryInputData.referenceSequenceDictionaryBroadcast.getValue(), svDiscoveryInputData.toolLogger);
     }
 
     private static void forNonComplexVariants(final EnumMap<RawTypes, JavaRDD<AssemblyContigWithFineTunedAlignments>> contigsByPossibleRawTypes,
